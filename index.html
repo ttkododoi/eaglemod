@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GX-LAUNCHER // Modded</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== TOP NAV BAR ===== -->
+  <header class="top-nav">
+    <div class="brand">
+      <span class="brand-name">GX-LAUNCHER</span>
+      <span class="brand-version">V2.3-MODDED</span>
+    </div>
+    <div class="top-nav-right">
+      <span class="crumb">HOME / GAME</span>
+    </div>
+  </header>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="player-section">
+      <div class="player-label">PLAYER</div>
+      <div class="player-name">Player</div>
+      <div class="player-status"><span class="status-dot"></span>ONLINE</div>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="#" class="nav-item" data-page="update-log">UPDATE LOG</a>
+      <a href="#" class="nav-item active" data-page="game">GAME</a>
+      <a href="#" class="nav-item" data-page="clients">CLIENTS</a>
+      <a href="#" class="nav-item" data-page="beta-clients">BETA CLIENTS</a>
+      <a href="#" class="nav-item" data-page="servers">SERVERS</a>
+      <a href="#" class="nav-item" data-page="downloads">DOWNLOADS</a>
+      <a href="#" class="nav-item" data-page="discord">DISCORD</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="nav-item-small">LAUNCHER SETTINGS</span>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content" id="mainContent">
+
+    <!-- Version selection grid (HOME view) -->
+    <section class="view view-home" id="viewHome">
+      <div class="hero-banner">
+        <div class="hero-overlay">
+          <h1 class="hero-title">Select Your Version</h1>
+          <p class="hero-sub">Choose a client version and runtime mode, then launch.</p>
+        </div>
+      </div>
+
+      <div class="version-grid" id="versionGrid"></div>
+
+      <div class="bottom-bar">
+        <div class="bottom-left">
+          <div class="version-select-wrap">
+            <label class="version-select-label">Select Version</label>
+            <select id="versionSelect" class="version-select">
+              <option value="">— Choose —</option>
+            </select>
+          </div>
+          <div class="mode-label" id="modeLabel">MODE: REGULAR</div>
+          <button class="launch-btn" id="launchBtn">LAUNCH</button>
+        </div>
+        <div class="bottom-right-info">
+          <span class="status-text" id="statusText">READY</span>
+          <span class="built-by">Built by the community</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game viewport (PLAY view) -->
+    <section class="view view-play hidden" id="viewPlay">
+      <div class="game-frame-wrap">
+        <iframe
+          id="gameFrame"
+          class="game-frame"
+          frameborder="0"
+          allow="autoplay; fullscreen; gamepad; pointer-lock"
+          allowfullscreen
+        ></iframe>
+
+        <!-- Back button -->
+        <button class="back-btn" id="backBtn">◀ BACK</button>
+
+        <!-- Mod overlay (toggled by Right-Shift) -->
+        <div class="mod-overlay hidden" id="modOverlay">
+          <div class="mod-overlay-header">
+            <span>MOD MENU</span>
+            <span class="mod-overlay-hint">Right-Shift to toggle</span>
+          </div>
+          <div class="mod-list" id="modList"></div>
+          <div class="mod-overlay-footer">
+            <button class="mod-btn" id="injectAllBtn">Inject All Active</button>
+            <button class="mod-btn mod-btn-danger" id="clearModsBtn">Clear All Mods</button>
+          </div>
+          <div class="mod-status" id="modStatus"></div>
+        </div>
+
+        <!-- HUD overlay for FPS/Coords -->
+        <div class="hud-overlay hidden" id="hudOverlay"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Scripts ===== -->
+  <script src="js/versions.js"></script>
+  <script src="js/mods/esp.js"></script>
+  <script src="js/mods/xray.js"></script>
+  <script src="js/mods/bhop.js"></script>
+  <script src="js/mods/fullbright.js"></script>
+  <script src="js/mods/sprint.js"></script>
+  <script src="js/mods/hud.js"></script>
+  <script src="js/mod-loader.js"></script>
+  <script src="js/overlay.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
