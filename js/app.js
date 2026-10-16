@@ -16,29 +16,49 @@
   }
 
   /**
-   * Build the visual version card grid.
+   * Build the visual version card grid, grouped by client.
    */
   function buildVersionGrid() {
     const grid = document.getElementById("versionGrid");
     grid.innerHTML = "";
 
+    // Group versions by client
+    const groups = {};
     GAME_VERSIONS.forEach(v => {
-      const card = document.createElement("div");
-      card.className = "version-card";
-      card.dataset.versionId = v.id;
+      if (!groups[v.client]) groups[v.client] = [];
+      groups[v.client].push(v);
+    });
 
-      const runtimeClass = v.runtime.toLowerCase();
-      const iconEmoji = v.runtime === "WASM" ? "⚡" : "JS";
+    // Render each client group with a section header
+    Object.entries(groups).forEach(([clientName, versions]) => {
+      const section = document.createElement("div");
+      section.className = "client-section";
+      section.innerHTML = `<div class="client-section-header">${clientName}</div>`;
 
-      card.innerHTML = `
-        <div class="version-card-icon">${iconEmoji}</div>
-        <div class="version-card-version">v${v.label}</div>
-        <div class="version-card-type">Client</div>
-        <div class="version-card-runtime ${runtimeClass}">${v.runtime}</div>
-      `;
+      const cardRow = document.createElement("div");
+      cardRow.className = "version-card-row";
 
-      card.addEventListener("click", () => selectVersion(v));
-      grid.appendChild(card);
+      versions.forEach(v => {
+        const card = document.createElement("div");
+        card.className = "version-card";
+        card.dataset.versionId = v.id;
+
+        const runtimeClass = v.runtime.toLowerCase();
+        const iconEmoji = v.runtime === "WASM" ? "⚡" : "JS";
+
+        card.innerHTML = `
+          <div class="version-card-icon">${iconEmoji}</div>
+          <div class="version-card-version">${v.label}</div>
+          <div class="version-card-type">${v.client}</div>
+          <div class="version-card-runtime ${runtimeClass}">${v.runtime}</div>
+        `;
+
+        card.addEventListener("click", () => selectVersion(v));
+        cardRow.appendChild(card);
+      });
+
+      section.appendChild(cardRow);
+      grid.appendChild(section);
     });
   }
 
@@ -49,11 +69,23 @@
     const select = document.getElementById("versionSelect");
     select.innerHTML = '<option value="">— Choose —</option>';
 
+    // Group by client in dropdown
+    const groups = {};
     GAME_VERSIONS.forEach(v => {
-      const opt = document.createElement("option");
-      opt.value = v.id;
-      opt.textContent = `v${v.label} (${v.runtime})`;
-      select.appendChild(opt);
+      if (!groups[v.client]) groups[v.client] = [];
+      groups[v.client].push(v);
+    });
+
+    Object.entries(groups).forEach(([clientName, versions]) => {
+      const optgroup = document.createElement("optgroup");
+      optgroup.label = clientName;
+      versions.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v.id;
+        opt.textContent = `${v.label} (${v.runtime})`;
+        optgroup.appendChild(opt);
+      });
+      select.appendChild(optgroup);
     });
   }
 
@@ -63,21 +95,16 @@
   function selectVersion(version) {
     selectedVersion = version;
 
-    // Update grid card highlight
     document.querySelectorAll(".version-card").forEach(card => {
       card.classList.toggle("selected", card.dataset.versionId === version.id);
     });
 
-    // Update dropdown
     const select = document.getElementById("versionSelect");
     select.value = version.id;
 
-    // Update mode label
     document.getElementById("modeLabel").textContent = `MODE: ${version.runtime}`;
-
-    // Enable launch
     document.getElementById("launchBtn").disabled = false;
-    document.getElementById("statusText").textContent = `READY: v${version.label} ${version.runtime}`;
+    document.getElementById("statusText").textContent = `READY: ${version.client} ${version.label}`;
   }
 
   /**
@@ -92,10 +119,9 @@
     const frame = document.getElementById("gameFrame");
     frame.src = selectedVersion.url;
 
-    // Update status
-    document.getElementById("statusText").textContent = `PLAYING: v${selectedVersion.label} ${selectedVersion.runtime}`;
+    document.getElementById("statusText").textContent =
+      `PLAYING: ${selectedVersion.client} ${selectedVersion.label}`;
 
-    // Attempt to attach mod loader to the iframe (will fail silently if cross-origin)
     frame.addEventListener("load", function onLoad() {
       frame.removeEventListener("load", onLoad);
       const sameOrigin = ModLoader.attach(frame);
@@ -104,7 +130,6 @@
         const statusEl = document.getElementById("modStatus");
         statusEl.textContent = "Cross-origin iframe — mods need console injection";
         statusEl.className = "mod-status error";
-        console.info("[App] Iframe is cross-origin. Use the mod overlay to generate console-injectable scripts.");
       } else {
         console.info("[App] Same-origin iframe — mods can be injected directly.");
       }
@@ -115,46 +140,33 @@
    * Go back to the home/version-selection view.
    */
   function goBack() {
-    // Stop all mods before leaving
     ModLoader.clearAll();
-    Overlay.modStates = {};
-    document.querySelectorAll("#modList input[type=checkbox]").forEach(cb => cb.checked = false);
+    Overlay.resetToggles();
+    Overlay.clearCustomMods();
 
-    // Hide overlay
     document.getElementById("modOverlay").classList.add("hidden");
     Overlay.visible = false;
 
-    // Clear iframe
     const frame = document.getElementById("gameFrame");
     frame.src = "about:blank";
     ModLoader.gameWindow = null;
 
-    // Switch views
     document.getElementById("viewPlay").classList.add("hidden");
     document.getElementById("viewHome").classList.remove("hidden");
-
     document.getElementById("statusText").textContent = "READY";
   }
 
-  /**
-   * Bind all UI event listeners.
-   */
   function bindEvents() {
-    // Version dropdown change
     document.getElementById("versionSelect").addEventListener("change", (e) => {
       if (!e.target.value) return;
       const v = GAME_VERSIONS.find(g => g.id === e.target.value);
       if (v) selectVersion(v);
     });
 
-    // Launch button
     document.getElementById("launchBtn").addEventListener("click", launchGame);
     document.getElementById("launchBtn").disabled = true;
-
-    // Back button
     document.getElementById("backBtn").addEventListener("click", goBack);
 
-    // Sidebar nav (just visual — all routes show the game view)
     document.querySelectorAll(".nav-item").forEach(item => {
       item.addEventListener("click", (e) => {
         e.preventDefault();
@@ -163,13 +175,11 @@
       });
     });
 
-    // Prevent Right-Shift from doing anything else (browser shortcuts)
     document.addEventListener("keydown", (e) => {
       if (e.code === "ShiftRight") e.preventDefault();
     });
   }
 
-  // Boot
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {

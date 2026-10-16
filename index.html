@@ -94,6 +94,14 @@
             <span class="mod-overlay-hint">Right-Shift to toggle</span>
           </div>
           <div class="mod-list" id="modList"></div>
+          <!-- Custom mod creation -->
+          <div class="custom-mod-section">
+            <div class="custom-mod-header">ADD CUSTOM MOD</div>
+            <input type="text" id="customModName" class="custom-mod-input" placeholder="Mod name (optional)" />
+            <textarea id="customModCode" class="custom-mod-code" placeholder="Paste JavaScript here..." rows="3"></textarea>
+            <button class="mod-btn mod-btn-add" id="addCustomModBtn">+ Add Custom Mod</button>
+          </div>
+
           <div class="mod-overlay-footer">
             <button class="mod-btn" id="injectAllBtn">Inject All Active</button>
             <button class="mod-btn mod-btn-danger" id="clearModsBtn">Clear All Mods</button>

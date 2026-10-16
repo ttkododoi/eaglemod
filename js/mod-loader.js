@@ -2,22 +2,21 @@
  * mod-loader.js
  * Handles injecting mod scripts into the running game iframe context.
  *
+ * Supports:
+ *  - Built-in mods (ESP, X-Ray, etc.)
+ *  - Custom user-pasted JavaScript mods
+ *
  * Two injection strategies:
- *  1. Same-origin: If the iframe is same-origin with the launcher, we can directly
- *     access iframe.contentWindow and eval mod scripts into it.
- *  2. Cross-origin: The iframe is from gx-launcher.github.io. Direct DOM/JS access
- *     is blocked by the Same-Origin Policy. In this case we:
- *     - Generate a console-pasteable script for each active mod.
- *     - Use postMessage to request the game to load mods (if the game supports it).
- *     - Provide a "Copy" button so the user can paste into the game's dev console.
+ *  1. Same-origin: Direct contentWindow access.
+ *  2. Cross-origin: Generates console-pasteable scripts.
  */
 
 const ModLoader = {
   gameWindow: null,
   modRegistry: {},
+  customMods: {},    // { modId: { name, code, enabled } }
 
   init: function() {
-    // Register all available mods
     this.modRegistry = {
       esp: ESPMod,
       xray: XRayMod,
@@ -28,14 +27,9 @@ const ModLoader = {
     };
   },
 
-  /**
-   * Set the current game iframe and attempt to access its contentWindow.
-   * Returns true if same-origin access is available, false otherwise.
-   */
   attach: function(iframe) {
     try {
       this.gameWindow = iframe.contentWindow;
-      // Test access — throws if cross-origin
       this.gameWindow.document;
       return true;
     } catch (e) {
@@ -44,33 +38,23 @@ const ModLoader = {
     }
   },
 
-  /**
-   * Enable a mod by name. Injects into the iframe if same-origin,
-   * otherwise returns the script string for manual console injection.
-   */
   enableMod: function(modId) {
     const mod = this.modRegistry[modId];
     if (!mod) { console.warn("[ModLoader] Unknown mod:", modId); return false; }
 
     if (this.gameWindow) {
-      // Same-origin: inject directly
       try {
         mod.enable(this.gameWindow);
         return { success: true, method: "direct" };
       } catch (e) {
-        console.error("[ModLoader] Direct injection failed:", e);
         return { success: false, error: e.message };
       }
     } else {
-      // Cross-origin: generate console-injectable script
       const script = this._generateConsoleScript(modId, mod);
       return { success: true, method: "console", script: script };
     }
   },
 
-  /**
-   * Disable a mod by name.
-   */
   disableMod: function(modId) {
     const mod = this.modRegistry[modId];
     if (!mod) return false;
@@ -78,15 +62,11 @@ const ModLoader = {
     if (this.gameWindow) {
       try { mod.disable(this.gameWindow); } catch (e) { /* */ }
     } else {
-      mod.enabled = false; // At least update local state
+      mod.enabled = false;
     }
     return true;
   },
 
-  /**
-   * Inject all currently-enabled mods at once (for same-origin).
-   * For cross-origin, returns a combined script string.
-   */
   injectAll: function() {
     const results = [];
     for (const [id, mod] of Object.entries(this.modRegistry)) {
@@ -94,30 +74,82 @@ const ModLoader = {
         results.push({ id, ...this.enableMod(id) });
       }
     }
+    // Also inject enabled custom mods
+    for (const [id, custom] of Object.entries(this.customMods)) {
+      if (custom.enabled) {
+        results.push({ id, ...this.injectCustomMod(id) });
+      }
+    }
     return results;
   },
 
-  /**
-   * Clear/disable all mods.
-   */
   clearAll: function() {
     for (const [id, mod] of Object.entries(this.modRegistry)) {
-      if (mod.enabled) {
-        this.disableMod(id);
-      }
+      if (mod.enabled) this.disableMod(id);
+    }
+    for (const [id, custom] of Object.entries(this.customMods)) {
+      if (custom.enabled) this.disableCustomMod(id);
     }
   },
 
-  /**
-   * Generate a self-contained console-pasteable script for a mod.
-   * The script includes the mod's full source so it can be pasted into
-   * the game iframe's developer console (opened via F12 > console, with
-   * the iframe's execution context selected).
-   */
+  // ===== CUSTOM MOD SUPPORT =====
+
+  addCustomMod: function(name, code) {
+    const id = "custom_" + Date.now();
+    this.customMods[id] = { name, code, enabled: false };
+    return id;
+  },
+
+  removeCustomMod: function(id) {
+    if (this.customMods[id]) {
+      if (this.customMods[id].enabled) {
+        this.disableCustomMod(id);
+      }
+      delete this.customMods[id];
+    }
+  },
+
+  injectCustomMod: function(id) {
+    const custom = this.customMods[id];
+    if (!custom) return { success: false, error: "Unknown custom mod" };
+
+    if (this.gameWindow) {
+      try {
+        // Direct injection: eval the user's code in the iframe's context
+        const fn = new this.gameWindow.Function(custom.code);
+        fn.call(this.gameWindow);
+        custom.enabled = true;
+        return { success: true, method: "direct" };
+      } catch (e) {
+        return { success: false, error: e.message };
+      }
+    } else {
+      // Cross-origin: return the code as a console-pasteable script
+      const script = `(function(){\n/* ${custom.name} — paste into game console */\n${custom.code}\n})();`;
+      custom.enabled = true;
+      return { success: true, method: "console", script: script };
+    }
+  },
+
+  disableCustomMod: function(id) {
+    const custom = this.customMods[id];
+    if (!custom) return;
+    // For custom mods, we try to call a cleanup function if the user defined one
+    if (this.gameWindow) {
+      try {
+        if (this.gameWindow.__gx_custom_cleanup && this.gameWindow.__gx_custom_cleanup[id]) {
+          this.gameWindow.__gx_custom_cleanup[id]();
+          delete this.gameWindow.__gx_custom_cleanup[id];
+        }
+      } catch (e) { /* */ }
+    }
+    custom.enabled = false;
+  },
+
+  // ===== CONSOLE SCRIPT GENERATION =====
+
   _generateConsoleScript: function(modId, mod) {
-    // Build a script that recreates the mod object and enables it in the
-    // game's own window context.
-    return `(function(){${mod.toString ? "" : ""}/* ${mod.name} — paste into game console */\n` +
+    return `(function(){/* ${mod.name} — paste into game console */\n` +
            `var win = window;\n` +
            `var mod = ${this._serializeMod(mod)};\n` +
            `mod.enable(win);\n` +
@@ -127,10 +159,6 @@ const ModLoader = {
            `})();`;
   },
 
-  /**
-   * Serialize a mod object into a console-safe string.
-   * Extracts the enable/disable functions as source code.
-   */
   _serializeMod: function(mod) {
     const props = [];
     props.push(`name: ${JSON.stringify(mod.name)}`);
@@ -138,15 +166,10 @@ const ModLoader = {
     props.push(`enabled: false`);
     props.push(`_intervalId: null`);
 
-    // Serialize methods
     if (mod.enable) props.push(`enable: ${mod.enable.toString()}`);
     if (mod.disable) props.push(`disable: ${mod.disable.toString()}`);
     if (mod._project) props.push(`_project: ${mod._project.toString()}`);
-
-    // Serialize static data
-    if (mod._valuableBlocks) {
-      props.push(`_valuableBlocks: ${JSON.stringify(mod._valuableBlocks)}`);
-    }
+    if (mod._valuableBlocks) props.push(`_valuableBlocks: ${JSON.stringify(mod._valuableBlocks)}`);
     if (mod._originalGamma !== undefined) props.push(`_originalGamma: ${mod._originalGamma}`);
 
     return `{${props.join(", ")}}`;
