@@ -20,12 +20,18 @@ const Overlay = {
     list.innerHTML = "";
 
     const mods = [
-      { id: "esp",       mod: ESPMod },
-      { id: "xray",      mod: XRayMod },
-      { id: "bhop",      mod: BhopMod },
-      { id: "fullbright",mod: FullbrightMod },
-      { id: "sprint",    mod: SprintMod },
-      { id: "hud",       mod: HUDMod }
+      { id: "esp",        mod: ESPMod },
+      { id: "xray",       mod: XRayMod },
+      { id: "killaura",   mod: KillAuraMod },
+      { id: "fly",        mod: FlyMod },
+      { id: "speed",      mod: SpeedMod },
+      { id: "bhop",       mod: BhopMod },
+      { id: "sprint",     mod: SprintMod },
+      { id: "velocity",   mod: VelocityMod },
+      { id: "nofall",     mod: NoFallMod },
+      { id: "fullbright", mod: FullbrightMod },
+      { id: "antiafk",    mod: AntiAFKMod },
+      { id: "hud",        mod: HUDMod }
     ];
 
     mods.forEach(({ id, mod }) => {
@@ -62,13 +68,11 @@ const Overlay = {
     `;
     container.appendChild(item);
 
-    // Wire toggle
     const cb = item.querySelector("input[type=checkbox]");
     cb.addEventListener("change", (e) => {
       this._onToggle(modId, e.target.checked);
     });
 
-    // Wire remove button for custom mods
     if (isCustom) {
       item.querySelector(".mod-remove-btn").addEventListener("click", () => {
         ModLoader.removeCustomMod(modId);
@@ -78,10 +82,7 @@ const Overlay = {
     }
   },
 
-  // ===== CUSTOM MOD SECTION =====
-
   _buildCustomModSection: function() {
-    // The HTML already contains the custom mod form; wire up events here.
     const addBtn = document.getElementById("addCustomModBtn");
     const nameInput = document.getElementById("customModName");
     const codeInput = document.getElementById("customModCode");
@@ -101,7 +102,6 @@ const Overlay = {
       const list = document.getElementById("modList");
       this._addModItem(list, id, name, "User-pasted JavaScript", true);
 
-      // Clear inputs
       nameInput.value = "";
       codeInput.value = "";
 
@@ -109,10 +109,7 @@ const Overlay = {
     });
   },
 
-  // ===== TOGGLE HANDLING =====
-
   _onToggle: function(modId, enabled) {
-    const statusEl = document.getElementById("modStatus");
     const isCustom = modId.startsWith("custom_");
 
     if (isCustom) {
@@ -176,18 +173,18 @@ const Overlay = {
     modal.id = "_consoleScriptModal";
     modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;";
     modal.innerHTML = `
-      <div style="background:#1a1a1a;border:1px solid #2d2d2d;border-radius:8px;padding:24px;max-width:600px;width:90%;">
-        <h3 style="color:#e60000;margin-bottom:8px;">${modName} — Console Injection</h3>
-        <p style="color:#888;font-size:12px;margin-bottom:12px;">
+      <div style="background:#1c1c1e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;max-width:600px;width:90%;">
+        <h3 style="color:#0A84FF;margin-bottom:8px;font-size:18px;">${modName} — Console Injection</h3>
+        <p style="color:rgba(235,235,245,0.6);font-size:13px;margin-bottom:12px;line-height:1.5;">
           The game runs in a cross-origin iframe. To inject this mod:<br>
           1. Right-click the game area → Inspect Element<br>
           2. Switch to the iframe's execution context (dropdown in Console tab)<br>
           3. Paste the script below and press Enter
         </p>
-        <textarea readonly style="width:100%;height:200px;background:#0d0d0d;color:#0f0;border:1px solid #2d2d2d;border-radius:4px;padding:8px;font-family:monospace;font-size:11px;resize:none;">${script.replace(/</g, "<").replace(/>/g, ">")}</textarea>
+        <textarea readonly style="width:100%;height:200px;background:#000;color:#32d74b;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px;font-family:monospace;font-size:11px;resize:none;">${script.replace(/</g, "<").replace(/>/g, ">")}</textarea>
         <div style="display:flex;gap:8px;margin-top:12px;">
-          <button id="_copyScriptBtn" style="flex:1;background:#2d2d2d;color:#fff;border:none;padding:8px;border-radius:4px;cursor:pointer;">Copy to Clipboard</button>
-          <button id="_closeScriptBtn" style="flex:1;background:#2d2d2d;color:#fff;border:none;padding:8px;border-radius:4px;cursor:pointer;">Close</button>
+          <button id="_copyScriptBtn" style="flex:1;background:#0A84FF;color:#fff;border:none;padding:10px;border-radius:10px;cursor:pointer;font-weight:600;">Copy to Clipboard</button>
+          <button id="_closeScriptBtn" style="flex:1;background:rgba(255,255,255,0.1);color:#fff;border:none;padding:10px;border-radius:10px;cursor:pointer;">Close</button>
         </div>
       </div>
     `;
@@ -250,7 +247,6 @@ const Overlay = {
   },
 
   clearCustomMods: function() {
-    // Remove all custom mod items from the UI
     document.querySelectorAll("#modList .mod-item-custom").forEach(item => item.remove());
     ModLoader.customMods = {};
   },

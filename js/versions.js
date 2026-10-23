@@ -1,8 +1,74 @@
 /**
  * versions.js
- * Version mappings for all supported game client embeds.
- * Each entry has an id, display label, runtime type (JS or WASM), iframe URL, and client name.
+ * Version mappings for all supported game client embeds + client metadata.
  */
+
+/**
+ * CLIENT_INFO — per-client metadata used for cards, colors, and descriptions.
+ * gradient is a CSS linear-gradient string used as the card art background.
+ */
+const CLIENT_INFO = {
+  "GX Launcher": {
+    desc: "The original web-based Minecraft launcher with vanilla versions spanning 1.5.2 to 26.3.",
+    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    tag: "Vanilla"
+  },
+  "Astra Client": {
+    desc: "Feature-rich PvP client with custom HUD, kill effects, and performance optimizations.",
+    gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    tag: "PvP"
+  },
+  "Tuff Client": {
+    desc: "Lightweight Eaglercraft client focused on stability and compatibility.",
+    gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    tag: "Stable"
+  },
+  "Resent Client": {
+    desc: "Next-gen Eaglercraft client with modern UI and extended mod support.",
+    gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+    tag: "Modern"
+  },
+  "Starlike": {
+    desc: "Unique WASM-based client with smooth rendering and custom shaders.",
+    gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    tag: "WASM"
+  },
+  "Eaglercraft": {
+    desc: "The classic Eaglercraft web client, running 1.12.2 in the browser via WASM.",
+    gradient: "linear-gradient(135deg, #30cfd0 0%, #330867 100%)",
+    tag: "Classic"
+  },
+  "EaglercraftX": {
+    desc: "Enhanced EaglercraftX 1.8 runtime with improved performance and features.",
+    gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    tag: "1.8"
+  },
+  "DragonX": {
+    desc: "Dragon-themed PvP client with dragon visuals, custom animations, and combat tools.",
+    gradient: "linear-gradient(135deg, #ff4e50 0%, #f9d423 100%)",
+    tag: "PvP"
+  },
+  "UwU Client": {
+    desc: "Cute and powerful utility client with anime-inspired UI and extensive mod collection.",
+    gradient: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+    tag: "Utility"
+  },
+  "Shadow Client": {
+    desc: "Stealth-focused client with minimal HUD footprint and optimized reach hitboxes.",
+    gradient: "linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%)",
+    tag: "Stealth"
+  },
+  "Precision Client": {
+    desc: "Tournament-grade client with precise hit registration and frame-perfect input.",
+    gradient: "linear-gradient(135deg, #ee0979 0%, #ff6a00 100%)",
+    tag: "Competitive"
+  },
+  "Bullfrog Client": {
+    desc: "Hop into action with Bullfrog — optimized for low-end devices and fast loads.",
+    gradient: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
+    tag: "Lightweight"
+  }
+};
 
 const GAME_VERSIONS = [
   // ===== GX LAUNCHER (vanilla) =====
@@ -40,4 +106,22 @@ const GAME_VERSIONS = [
 
   // ===== EAGLERCRAFTX 1.8 =====
   { id: "eaglerx-1.8", label: "EaglerX 1.8", runtime: "JS", url: "https://eaglercraftx1-8.github.io/", client: "EaglercraftX" },
+
+  // ===== DRAGONX CLIENT =====
+  { id: "dragonx-js",  label: "DragonX 1.8", runtime: "JS",   url: "https://eaglercraft.dev/clients/DragonX%20Client%20JS/",  client: "DragonX" },
+  { id: "dragonx-wasm", label: "DragonX 1.8", runtime: "WASM", url: "https://eaglercraft.dev/clients/DragonX%20Client%20WASM/", client: "DragonX" },
+
+  // ===== UWU CLIENT =====
+  { id: "uwu-js",   label: "UwU Client", runtime: "JS",   url: "https://eaglercraft.dev/clients/UwU%20Client%20JS/",  client: "UwU Client" },
+  { id: "uwu-wasm", label: "UwU Client", runtime: "WASM", url: "https://eaglercraft.dev/clients/UwU%20Client%20WASM/", client: "UwU Client" },
+
+  // ===== SHADOW CLIENT =====
+  { id: "shadow-js",   label: "Shadow 1.8", runtime: "JS",   url: "https://eaglercraft.dev/clients/Shadow%20Client%20JS/",  client: "Shadow Client" },
+  { id: "shadow-wasm",  label: "Shadow 1.8", runtime: "WASM", url: "https://eaglercraft.dev/clients/Shadow%20Client%20WASM/", client: "Shadow Client" },
+
+  // ===== PRECISION CLIENT =====
+  { id: "precision-wasm", label: "Precision 1.8", runtime: "WASM", url: "https://eaglercraft.dev/clients/Precision%20Client%20WASM/", client: "Precision Client" },
+
+  // ===== BULLFROG CLIENT =====
+  { id: "bullfrog-js", label: "Bullfrog 1.8", runtime: "JS", url: "https://eaglercraft.dev/clients/Bullfrog%20Client%20JS/", client: "Bullfrog Client" },
 ];

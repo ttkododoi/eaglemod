@@ -3,114 +3,210 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GX-LAUNCHER // Modded</title>
+  <title>GX Launcher — Web Minecraft</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- ===== TOP NAV BAR ===== -->
+
+  <!-- ===== TOP NAV ===== -->
   <header class="top-nav">
-    <div class="brand">
-      <span class="brand-name">GX-LAUNCHER</span>
-      <span class="brand-version">V2.3-MODDED</span>
+    <div class="nav-left">
+      <div class="brand-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" stroke="#0A84FF" stroke-width="2" stroke-linejoin="round" fill="rgba(10,132,255,0.15)"/></svg>
+        <span class="brand-name">GX Launcher</span>
+      </div>
     </div>
-    <div class="top-nav-right">
-      <span class="crumb">HOME / GAME</span>
+    <div class="nav-right">
+      <span class="nav-badge">12 MODS</span>
+      <span class="nav-badge">12 CLIENTS</span>
+      <span class="nav-badge accent">30 VERSIONS</span>
     </div>
   </header>
 
   <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar" id="sidebar">
-    <div class="player-section">
-      <div class="player-label">PLAYER</div>
-      <div class="player-name">Player</div>
-      <div class="player-status"><span class="status-dot"></span>ONLINE</div>
+    <div class="player-card">
+      <div class="player-avatar">P</div>
+      <div class="player-info">
+        <div class="player-name">Player</div>
+        <div class="player-status"><span class="status-dot"></span>Online</div>
+      </div>
     </div>
 
     <nav class="nav-menu">
-      <a href="#" class="nav-item" data-page="update-log">UPDATE LOG</a>
-      <a href="#" class="nav-item active" data-page="game">GAME</a>
-      <a href="#" class="nav-item" data-page="clients">CLIENTS</a>
-      <a href="#" class="nav-item" data-page="beta-clients">BETA CLIENTS</a>
-      <a href="#" class="nav-item" data-page="servers">SERVERS</a>
-      <a href="#" class="nav-item" data-page="downloads">DOWNLOADS</a>
-      <a href="#" class="nav-item" data-page="discord">DISCORD</a>
+      <a href="#" class="nav-item" data-page="updatelog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Update Log</span>
+      </a>
+      <a href="#" class="nav-item active" data-page="game">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="4"/><line x1="7" y1="12" x2="7" y2="12"/><line x1="11" y1="10" x2="11" y2="14"/><line x1="9" y1="12" x2="13" y2="12"/><circle cx="16.5" cy="12" r="1"/><circle cx="18" cy="10" r="1"/></svg>
+        <span>Play</span>
+      </a>
+      <a href="#" class="nav-item" data-page="clients">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+        <span>Clients</span>
+      </a>
+      <a href="#" class="nav-item" data-page="beta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v4l4 7a4 4 0 0 1-4 6H9a4 4 0 0 1-4-6l4-7V3z"/></svg>
+        <span>Beta Clients</span>
+      </a>
+      <a href="#" class="nav-item" data-page="servers">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="6" rx="2"/><rect x="2" y="15" width="20" height="6" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        <span>Servers</span>
+      </a>
+      <a href="#" class="nav-item" data-page="downloads">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Downloads</span>
+      </a>
+      <a href="#" class="nav-item" data-page="discord">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <span>Discord</span>
+      </a>
     </nav>
 
     <div class="sidebar-footer">
-      <span class="nav-item-small">LAUNCHER SETTINGS</span>
+      <div class="settings-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Launcher Settings</span>
+      </div>
     </div>
   </aside>
 
   <!-- ===== MAIN CONTENT ===== -->
   <main class="main-content" id="mainContent">
 
-    <!-- Version selection grid (HOME view) -->
-    <section class="view view-home" id="viewHome">
-      <div class="hero-banner">
-        <div class="hero-overlay">
-          <h1 class="hero-title">Select Your Version</h1>
-          <p class="hero-sub">Choose a client version and runtime mode, then launch.</p>
+    <!-- ===== GAME / PLAY VIEW ===== -->
+    <section class="view view-home" id="viewGame">
+      <div class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">Play Minecraft<br>in your browser.</h1>
+          <p class="hero-sub">30 versions across 12 clients. Pick one and launch.</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><span class="stat-num">12</span><span class="stat-label">Clients</span></div>
+            <div class="hero-stat"><span class="stat-num">30</span><span class="stat-label">Versions</span></div>
+            <div class="hero-stat"><span class="stat-num">12</span><span class="stat-label">Mods</span></div>
+          </div>
         </div>
+        <div class="hero-glow"></div>
       </div>
 
-      <div class="version-grid" id="versionGrid"></div>
+      <div class="game-toolbar">
+        <input type="text" id="versionSearch" class="search-input" placeholder="Search versions or clients…" />
+      </div>
+
+      <div class="version-scroll" id="versionGrid"></div>
 
       <div class="bottom-bar">
         <div class="bottom-left">
           <div class="version-select-wrap">
-            <label class="version-select-label">Select Version</label>
+            <label class="select-label">Selected Version</label>
             <select id="versionSelect" class="version-select">
-              <option value="">— Choose —</option>
+              <option value="">— Choose a version —</option>
             </select>
           </div>
-          <div class="mode-label" id="modeLabel">MODE: REGULAR</div>
-          <button class="launch-btn" id="launchBtn">LAUNCH</button>
+          <div class="mode-pill" id="modeLabel">MODE: —</div>
+          <button class="launch-btn" id="launchBtn">Launch</button>
         </div>
         <div class="bottom-right-info">
-          <span class="status-text" id="statusText">READY</span>
-          <span class="built-by">Built by the community</span>
+          <span class="status-text" id="statusText">Ready</span>
         </div>
       </div>
     </section>
 
-    <!-- Game viewport (PLAY view) -->
+    <!-- ===== GAME VIEWPORT (PLAY) ===== -->
     <section class="view view-play hidden" id="viewPlay">
       <div class="game-frame-wrap">
-        <iframe
-          id="gameFrame"
-          class="game-frame"
-          frameborder="0"
-          allow="autoplay; fullscreen; gamepad; pointer-lock"
-          allowfullscreen
-        ></iframe>
+        <iframe id="gameFrame" class="game-frame" frameborder="0" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe>
+        <button class="back-btn" id="backBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
 
-        <!-- Back button -->
-        <button class="back-btn" id="backBtn">◀ BACK</button>
-
-        <!-- Mod overlay (toggled by Right-Shift) -->
         <div class="mod-overlay hidden" id="modOverlay">
           <div class="mod-overlay-header">
-            <span>MOD MENU</span>
+            <span class="mod-overlay-title">Mods</span>
             <span class="mod-overlay-hint">Right-Shift to toggle</span>
           </div>
           <div class="mod-list" id="modList"></div>
-          <!-- Custom mod creation -->
           <div class="custom-mod-section">
-            <div class="custom-mod-header">ADD CUSTOM MOD</div>
+            <div class="custom-mod-header">Add Custom Mod</div>
             <input type="text" id="customModName" class="custom-mod-input" placeholder="Mod name (optional)" />
-            <textarea id="customModCode" class="custom-mod-code" placeholder="Paste JavaScript here..." rows="3"></textarea>
+            <textarea id="customModCode" class="custom-mod-code" placeholder="Paste JavaScript here…" rows="3"></textarea>
             <button class="mod-btn mod-btn-add" id="addCustomModBtn">+ Add Custom Mod</button>
           </div>
-
           <div class="mod-overlay-footer">
             <button class="mod-btn" id="injectAllBtn">Inject All Active</button>
-            <button class="mod-btn mod-btn-danger" id="clearModsBtn">Clear All Mods</button>
+            <button class="mod-btn mod-btn-danger" id="clearModsBtn">Clear All</button>
           </div>
           <div class="mod-status" id="modStatus"></div>
         </div>
 
-        <!-- HUD overlay for FPS/Coords -->
         <div class="hud-overlay hidden" id="hudOverlay"></div>
+      </div>
+    </section>
+
+    <!-- ===== CLIENTS VIEW ===== -->
+    <section class="view view-clients hidden" id="viewClients">
+      <div class="page-header">
+        <h1>Clients</h1>
+        <p>Browse all available Eaglercraft clients with their features and versions.</p>
+      </div>
+      <div class="client-grid" id="clientGrid"></div>
+    </section>
+
+    <!-- ===== UPDATE LOG VIEW ===== -->
+    <section class="view view-updatelog hidden" id="viewUpdatelog">
+      <div class="page-header">
+        <h1>Update Log</h1>
+        <p>What's new in the GX Launcher.</p>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <!-- ===== BETA CLIENTS VIEW ===== -->
+    <section class="view view-beta hidden" id="viewBeta">
+      <div class="page-header">
+        <h1>Beta Clients</h1>
+        <p>Experimental and beta builds — use at your own risk.</p>
+      </div>
+      <div class="beta-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Beta clients may be unstable and could crash or lose progress.</span>
+      </div>
+      <div class="version-scroll" id="betaGrid"></div>
+    </section>
+
+    <!-- ===== SERVERS VIEW ===== -->
+    <section class="view view-servers hidden" id="viewServers">
+      <div class="page-header">
+        <h1>Servers</h1>
+        <p>Join community multiplayer servers directly from your browser.</p>
+      </div>
+      <div class="server-grid" id="serverGrid"></div>
+    </section>
+
+    <!-- ===== DOWNLOADS VIEW ===== -->
+    <section class="view view-downloads hidden" id="viewDownloads">
+      <div class="page-header">
+        <h1>Downloads</h1>
+        <p>Get the GX Launcher on your platform, or play instantly in the browser.</p>
+      </div>
+      <div class="download-grid" id="downloadGrid"></div>
+    </section>
+
+    <!-- ===== DISCORD VIEW ===== -->
+    <section class="view view-discord hidden" id="viewDiscord">
+      <div class="page-header">
+        <h1>Community</h1>
+        <p>Join the community for updates, support, and mod sharing.</p>
+      </div>
+      <div class="discord-card">
+        <div class="discord-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.182 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        </div>
+        <h2>Join our Discord</h2>
+        <p>Connect with thousands of players, share custom mods, report bugs, and get early access to beta clients.</p>
+        <a href="#" class="discord-join-btn" id="discordJoinBtn">Join Server</a>
       </div>
     </section>
 
@@ -124,6 +220,12 @@
   <script src="js/mods/fullbright.js"></script>
   <script src="js/mods/sprint.js"></script>
   <script src="js/mods/hud.js"></script>
+  <script src="js/mods/fly.js"></script>
+  <script src="js/mods/nofall.js"></script>
+  <script src="js/mods/speed.js"></script>
+  <script src="js/mods/killaura.js"></script>
+  <script src="js/mods/velocity.js"></script>
+  <script src="js/mods/antiafk.js"></script>
   <script src="js/mod-loader.js"></script>
   <script src="js/overlay.js"></script>
   <script src="js/app.js"></script>

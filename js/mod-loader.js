@@ -3,27 +3,33 @@
  * Handles injecting mod scripts into the running game iframe context.
  *
  * Supports:
- *  - Built-in mods (ESP, X-Ray, etc.)
+ *  - Built-in mods (ESP, X-Ray, Fly, etc.)
  *  - Custom user-pasted JavaScript mods
  *
  * Two injection strategies:
- *  1. Same-origin: Direct contentWindow access.
- *  2. Cross-origin: Generates console-pasteable scripts.
+ * 1. Same-origin: Direct contentWindow access.
+ * 2. Cross-origin: Generates console-pasteable scripts.
  */
 
 const ModLoader = {
   gameWindow: null,
   modRegistry: {},
-  customMods: {},    // { modId: { name, code, enabled } }
+  customMods: {},
 
   init: function() {
     this.modRegistry = {
-      esp: ESPMod,
-      xray: XRayMod,
-      bhop: BhopMod,
+      esp:        ESPMod,
+      xray:       XRayMod,
+      bhop:       BhopMod,
       fullbright: FullbrightMod,
-      sprint: SprintMod,
-      hud: HUDMod
+      sprint:     SprintMod,
+      hud:        HUDMod,
+      fly:        FlyMod,
+      nofall:     NoFallMod,
+      speed:      SpeedMod,
+      killaura:   KillAuraMod,
+      velocity:   VelocityMod,
+      antiafk:    AntiAFKMod
     };
   },
 
@@ -74,7 +80,6 @@ const ModLoader = {
         results.push({ id, ...this.enableMod(id) });
       }
     }
-    // Also inject enabled custom mods
     for (const [id, custom] of Object.entries(this.customMods)) {
       if (custom.enabled) {
         results.push({ id, ...this.injectCustomMod(id) });
@@ -115,7 +120,6 @@ const ModLoader = {
 
     if (this.gameWindow) {
       try {
-        // Direct injection: eval the user's code in the iframe's context
         const fn = new this.gameWindow.Function(custom.code);
         fn.call(this.gameWindow);
         custom.enabled = true;
@@ -124,7 +128,6 @@ const ModLoader = {
         return { success: false, error: e.message };
       }
     } else {
-      // Cross-origin: return the code as a console-pasteable script
       const script = `(function(){\n/* ${custom.name} — paste into game console */\n${custom.code}\n})();`;
       custom.enabled = true;
       return { success: true, method: "console", script: script };
@@ -134,7 +137,6 @@ const ModLoader = {
   disableCustomMod: function(id) {
     const custom = this.customMods[id];
     if (!custom) return;
-    // For custom mods, we try to call a cleanup function if the user defined one
     if (this.gameWindow) {
       try {
         if (this.gameWindow.__gx_custom_cleanup && this.gameWindow.__gx_custom_cleanup[id]) {
