@@ -240,6 +240,16 @@
     const timeline = document.getElementById("timeline");
     const updates = [
       {
+        version: "v2.4",
+        date: "Oct 2026",
+        changes: [
+          "Added 8 new ModAPI-based mods: Autoclicker, AutoFish, AutoRespawn, Blink, SemiAutoLogin, Stats HUD, Vein Miner, Faster Minecarts",
+          "Replaced X-Ray, Speed, and Fullbright with ModAPI versions for better compatibility",
+          "Improved mod serialization for console injection across all mods",
+          "Total mod count increased to 20"
+        ]
+      },
+      {
         version: "v2.3",
         date: "Oct 2026",
         changes: [

@@ -1,52 +1,61 @@
 /**
  * mods/fullbright.js
- * Fullbright — forces maximum gamma/brightness so caves and dark areas are fully lit.
+ * Fullbright — forces maximum gamma so caves and dark areas are fully lit.
+ * Adapted from the ModAPI-based Fullbright mod (replaces previous contentWindow version).
+ * Toggle with the PageUp key (key code 33) inside the game.
  */
 
 const FullbrightMod = {
   name: "Fullbright",
   desc: "Max gamma — no darkness",
   enabled: false,
-  _originalGamma: null,
+  _toggled: false,
+  _gamma: 1000,
 
   enable: function(win) {
     this.enabled = true;
-    const mc = win.Minecraft || win.minecraft || win.theMinecraft;
-    if (!mc) {
-      console.warn("[Fullbright] No Minecraft instance found");
-      return;
-    }
+    var ModAPI = win.ModAPI;
+    if (!ModAPI) { console.warn("[Fullbright] ModAPI not found"); return; }
 
+    ModAPI.require("settings");
+    var self = this;
+    this._toggled = true;
+
+    // Apply fullbright immediately
     try {
-      // Try multiple gamma access patterns across versions
-      if (mc.gameSettings) {
-        if (mc.gameSettings.gammaSetting !== undefined) {
-          this._originalGamma = mc.gameSettings.gammaSetting;
-          mc.gameSettings.gammaSetting = 16.0;
-        } else if (mc.gameSettings.field_74333_O !== undefined) {
-          this._originalGamma = mc.gameSettings.field_74333_O;
-          mc.gameSettings.field_74333_O = 16.0;
+      ModAPI.settings.gammaSetting = this._gamma;
+      ModAPI.settings.reload();
+    } catch (e) { /* */ }
+
+    // Allow toggling with PageUp key
+    this._keyHandler = function(ev) {
+      if (!self.enabled) return;
+      if (ev.key === 33) {
+        if (!self._toggled) {
+          ModAPI.settings.gammaSetting = self._gamma;
+          ModAPI.settings.reload();
+          try { ModAPI.displayToChat({ msg: "fullbright enabled!" }); } catch (e) {}
+          self._toggled = true;
+        } else {
+          ModAPI.settings.gammaSetting = 1;
+          ModAPI.settings.reload();
+          try { ModAPI.displayToChat({ msg: "fullbright disabled!" }); } catch (e) {}
+          self._toggled = false;
         }
       }
-      console.log("[Fullbright] Enabled — gamma set to max");
-    } catch (e) {
-      console.warn("[Fullbright] Could not set gamma:", e);
-    }
+    };
+    ModAPI.addEventListener("key", this._keyHandler);
   },
 
   disable: function(win) {
     this.enabled = false;
-    const mc = win ? (win.Minecraft || win.minecraft || win.theMinecraft) : null;
-    if (mc && mc.gameSettings && this._originalGamma !== null) {
+    var ModAPI = win.ModAPI;
+    if (ModAPI && ModAPI.settings) {
       try {
-        if (mc.gameSettings.gammaSetting !== undefined) {
-          mc.gameSettings.gammaSetting = this._originalGamma;
-        } else if (mc.gameSettings.field_74333_O !== undefined) {
-          mc.gameSettings.field_74333_O = this._originalGamma;
-        }
-      } catch (e) { /* silent */ }
+        ModAPI.settings.gammaSetting = 1;
+        ModAPI.settings.reload();
+      } catch (e) { /* */ }
     }
-    this._originalGamma = null;
-    console.log("[Fullbright] Disabled");
+    this._toggled = false;
   }
 };

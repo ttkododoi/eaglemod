@@ -18,18 +18,28 @@ const ModLoader = {
 
   init: function() {
     this.modRegistry = {
-      esp:        ESPMod,
-      xray:       XRayMod,
-      bhop:       BhopMod,
-      fullbright: FullbrightMod,
-      sprint:     SprintMod,
-      hud:        HUDMod,
-      fly:        FlyMod,
-      nofall:     NoFallMod,
-      speed:      SpeedMod,
-      killaura:   KillAuraMod,
-      velocity:   VelocityMod,
-      antiafk:    AntiAFKMod
+      // Built-in mods (direct contentWindow access)
+      esp:            ESPMod,
+      xray:           XRayMod,
+      bhop:           BhopMod,
+      fullbright:     FullbrightMod,
+      sprint:         SprintMod,
+      hud:            HUDMod,
+      fly:            FlyMod,
+      nofall:         NoFallMod,
+      speed:          SpeedMod,
+      killaura:       KillAuraMod,
+      velocity:       VelocityMod,
+      antiafk:        AntiAFKMod,
+      // ModAPI-based mods (from user-provided pack)
+      autoclicker:    AutoclickerMod,
+      autofish:       AutoFishMod,
+      autorespawn:    AutoRespawnMod,
+      blink:          BlinkMod,
+      semiautologin:  SemiAutoLoginMod,
+      statshud:       StatsHudMod,
+      veinminer:      VeinMinerMod,
+      fasterminecarts: FasterMinecartsMod
     };
   },
 
@@ -163,17 +173,22 @@ const ModLoader = {
 
   _serializeMod: function(mod) {
     const props = [];
-    props.push(`name: ${JSON.stringify(mod.name)}`);
-    props.push(`desc: ${JSON.stringify(mod.desc)}`);
-    props.push(`enabled: false`);
-    props.push(`_intervalId: null`);
-
-    if (mod.enable) props.push(`enable: ${mod.enable.toString()}`);
-    if (mod.disable) props.push(`disable: ${mod.disable.toString()}`);
-    if (mod._project) props.push(`_project: ${mod._project.toString()}`);
-    if (mod._valuableBlocks) props.push(`_valuableBlocks: ${JSON.stringify(mod._valuableBlocks)}`);
-    if (mod._originalGamma !== undefined) props.push(`_originalGamma: ${mod._originalGamma}`);
-
+    for (const key of Object.keys(mod)) {
+      const val = mod[key];
+      if (typeof val === "function") {
+        props.push(`${key}: ${val.toString()}`);
+      } else if (typeof val === "string") {
+        props.push(`${key}: ${JSON.stringify(val)}`);
+      } else if (typeof val === "number" || typeof val === "boolean") {
+        props.push(`${key}: ${String(val)}`);
+      } else if (val === null) {
+        props.push(`${key}: null`);
+      } else if (Array.isArray(val)) {
+        props.push(`${key}: ${JSON.stringify(val)}`);
+      } else if (typeof val === "object") {
+        try { props.push(`${key}: ${JSON.stringify(val)}`); } catch (e) { /* skip non-serializable */ }
+      }
+    }
     return `{${props.join(", ")}}`;
   }
 };

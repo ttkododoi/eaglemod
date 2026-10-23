@@ -20,18 +20,28 @@ const Overlay = {
     list.innerHTML = "";
 
     const mods = [
-      { id: "esp",        mod: ESPMod },
-      { id: "xray",       mod: XRayMod },
-      { id: "killaura",   mod: KillAuraMod },
-      { id: "fly",        mod: FlyMod },
-      { id: "speed",      mod: SpeedMod },
-      { id: "bhop",       mod: BhopMod },
-      { id: "sprint",     mod: SprintMod },
-      { id: "velocity",   mod: VelocityMod },
-      { id: "nofall",     mod: NoFallMod },
-      { id: "fullbright", mod: FullbrightMod },
-      { id: "antiafk",    mod: AntiAFKMod },
-      { id: "hud",        mod: HUDMod }
+      // Built-in mods
+      { id: "esp",             mod: ESPMod },
+      { id: "xray",            mod: XRayMod },
+      { id: "killaura",        mod: KillAuraMod },
+      { id: "fly",             mod: FlyMod },
+      { id: "speed",           mod: SpeedMod },
+      { id: "bhop",            mod: BhopMod },
+      { id: "sprint",          mod: SprintMod },
+      { id: "velocity",        mod: VelocityMod },
+      { id: "nofall",          mod: NoFallMod },
+      { id: "fullbright",      mod: FullbrightMod },
+      { id: "antiafk",         mod: AntiAFKMod },
+      { id: "hud",             mod: HUDMod },
+      // ModAPI-based mods (from user-provided pack)
+      { id: "autoclicker",     mod: AutoclickerMod },
+      { id: "autofish",        mod: AutoFishMod },
+      { id: "autorespawn",     mod: AutoRespawnMod },
+      { id: "blink",           mod: BlinkMod },
+      { id: "semiautologin",   mod: SemiAutoLoginMod },
+      { id: "statshud",        mod: StatsHudMod },
+      { id: "veinminer",       mod: VeinMinerMod },
+      { id: "fasterminecarts", mod: FasterMinecartsMod }
     ];
 
     mods.forEach(({ id, mod }) => {

@@ -1,69 +1,50 @@
 /**
  * mods/speed.js
- * Speed — increases the player's horizontal movement speed multiplier.
+ * Speed — increases the player's movement speed while moving.
+ * Adapted from the ModAPI-based Speed mod (replaces previous contentWindow version).
  */
 
 const SpeedMod = {
   name: "Speed",
-  desc: "Move faster than normal",
+  desc: "Move faster while walking",
   enabled: false,
   _intervalId: null,
-  _boost: 2.0,
 
   enable: function(win) {
     this.enabled = true;
+    var ModAPI = win.ModAPI;
+    if (!ModAPI) { console.warn("[Speed] ModAPI not found"); return; }
 
-    const tick = () => {
-      if (!this.enabled) { return; }
+    ModAPI.require("player");
+    var self = this;
+    var newspeed = 10;
+    var oldspeed = ModAPI.player.getSpeed ? ModAPI.player.getSpeed() : 0.1;
 
-      const mc = win.Minecraft || win.minecraft || win.theMinecraft;
-      if (!mc) { this._intervalId = win.setTimeout(tick, 50); return; }
-
+    var tick = function() {
+      if (!self.enabled) return;
       try {
-        const player = mc.thePlayer;
-        if (!player) { this._intervalId = win.setTimeout(tick, 50); return; }
-
-        // Apply a speed boost to horizontal motion
-        if (player.motionX !== undefined && player.motionZ !== undefined) {
-          const moving = Math.abs(player.motionX) > 0.01 || Math.abs(player.motionZ) > 0.01;
-          if (moving) {
-            player.motionX *= this._boost;
-            player.motionZ *= this._boost;
-          }
+        if (ModAPI.player.isMoving && ModAPI.player.isMoving() === true) {
+          ModAPI.player.setSpeed({ speed: newspeed });
+        } else if (ModAPI.player.setSpeed) {
+          ModAPI.player.setSpeed({ speed: oldspeed });
         }
-
-        // Also try setting the speed attribute if available
-        if (player.capabilities && player.capabilities.walkSpeed !== undefined) {
-          if (player.capabilities._originalWalkSpeed === undefined) {
-            player.capabilities._originalWalkSpeed = player.capabilities.walkSpeed;
-          }
-          player.capabilities.walkSpeed = 0.3;
-        }
-      } catch (e) { /* silent */ }
-
-      this._intervalId = win.setTimeout(tick, 50);
+      } catch (e) { /* */ }
     };
 
-    tick();
-    console.log("[Speed] Enabled — movement speed boosted");
+    this._intervalId = win.setInterval(tick, 50);
   },
 
   disable: function(win) {
     this.enabled = false;
-    if (this._intervalId && win) {
-      win.clearTimeout(this._intervalId);
+    if (this._intervalId) {
+      win.clearInterval(this._intervalId);
       this._intervalId = null;
     }
-
-    const mc = win ? (win.Minecraft || win.minecraft || win.theMinecraft) : null;
-    if (mc && mc.thePlayer && mc.thePlayer.capabilities) {
-      try {
-        if (mc.thePlayer.capabilities._originalWalkSpeed !== undefined) {
-          mc.thePlayer.capabilities.walkSpeed = mc.thePlayer.capabilities._originalWalkSpeed;
-          delete mc.thePlayer.capabilities._originalWalkSpeed;
-        }
-      } catch (e) { /* silent */ }
-    }
-    console.log("[Speed] Disabled");
+    try {
+      var ModAPI = win.ModAPI;
+      if (ModAPI && ModAPI.player && ModAPI.player.setSpeed && this._oldSpeed !== undefined) {
+        ModAPI.player.setSpeed({ speed: this._oldSpeed });
+      }
+    } catch (e) { /* */ }
   }
 };
